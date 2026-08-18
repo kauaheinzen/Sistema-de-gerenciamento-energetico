@@ -3,6 +3,9 @@ from atualizar import *
 from deletar import *
 from ler import *
 from validações import *
+import os
+from dotenv import load_dotenv
+from google import genai
 
 
 def menu():
@@ -208,8 +211,44 @@ def menu():
 
         elif opcao == "5":
             familia = input("Digite o ID da família para a Inteligência Artificial analisar: ").strip()
+
+            eletronicos = []
+
+            casa = ler_casa(1)
+            consumo_mensal = ler_consumo_total(1)
+
+            for eletrodomestico in casa[1]:
+                eletronicos.append(eletrodomestico)
+
             print("Enviando prompt... A Inteligência Artificial dará cerca de dez dicas e tabelas de antes e depois com a estimativa de consumo ao realizar as melhorias.")
             print("\033[33mAguarde alguns segundos, estamos processando...\033[m")
+
+            try:
+                load_dotenv()
+                client = genai.Client()
+
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=f"Crie 10 soluções curtas para o problema de consumo excessivo de energia elétrica em uma residência, considerando que a família possui {casa[0][1]} integrantes e possui os seguintes eletrodomésticos com os respectivos parâmetros sendo eles: nome, consumo em Wh e horas utilizadas por dia, segue a lista de eletrônicos: {eletronicos}. O consumo total mensal é de {consumo_mensal[0]}W. Após as análises e dicas, faça uma tabela de antes e depois, sendo antes em cima e depois em baixo, com os eletrodomésticos, consumo em Wh, horas utilizadas por dia e o consumo total mensal de cada um deles após a aplicação dessas mudanças.",
+                )
+
+                print(response.text)
+            except:
+                load_dotenv()
+                client = genai.Client()
+
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=f"Crie 10 soluções curtas para o problema de consumo excessivo de energia elétrica em uma residência, considerando que a família possui {casa[0][1]} integrantes e possui os seguintes eletrodomésticos com os respectivos parâmetros sendo eles: nome, consumo em Wh e horas utilizadas por dia, segue a lista de eletrônicos: {eletronicos}. O consumo total mensal é de {consumo_mensal[0]}W. Após as análises e dicas, faça uma tabela de antes e depois, sendo antes em cima e depois em baixo, com os eletrodomésticos, consumo em Wh, horas utilizadas por dia e o consumo total mensal de cada um deles após a aplicação dessas mudanças.",
+                )
+
+                print(response.text)
+            
+            print("Clique em qualquer tecla para continuar...")
+            if os.name == 'nt':
+                import msvcrt
+                msvcrt.getch()
+            
 
         else:
             print("\033[31mOpção inválida!\033[m Escolha entre \033[33m0\033[m, \033[33m1\033[m, \033[33m2\033[m ou \033[33m3\033[m.")
