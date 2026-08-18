@@ -38,3 +38,23 @@ def ler_eletrodomesticos():
     finally:
         cursor.close()
         conn.close()
+
+
+def ler_consumo_total(familia):
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        sql = 'SELECT consumo_total FROM familia WHERE id_familia = %s'
+        cursor.execute(sql, (familia,))
+
+        resultado = cursor.fetchone()
+        return resultado
+
+    except Error as e:
+        conn.rollback()
+        return f"Erro {e} ao procurar o consumo total da família."
+    
+    finally:
+        cursor.close()
+        conn.close()
