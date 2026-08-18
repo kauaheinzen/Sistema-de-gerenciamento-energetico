@@ -1,13 +1,4 @@
-import mysql.connector
-
-
-def conectar():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="sistema_controle_energetico"
-    )
+from cadastrar import conectar
 
 
 def validar_pessoas(pessoas):
@@ -85,3 +76,33 @@ def validar_familia(id_familia):
 
     except ValueError:
         return False, "O ID da família deve ser um número inteiro"
+    
+
+def validar_eletronico(id_eletronico):
+    try:
+        id_eletronico = int(id_eletronico)
+        if id_eletronico <= 0:
+            return False, "ID do eletrônico inválido"
+
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        sql = """
+            SELECT id_eletronico
+            FROM eletrodomesticos
+            WHERE id_eletronico = %s
+        """
+
+        cursor.execute(sql, (id_eletronico,))
+        eletronico = cursor.fetchone()
+
+        cursor.close()
+        conexao.close()
+
+        if eletronico is None:
+            return False, "O eletrônico informado não existe"
+
+        return True, id_eletronico
+
+    except ValueError:
+        return False, "O ID do eletrônico deve ser um número inteiro"

@@ -5,7 +5,7 @@ def deletar_eletrodomestico(id):
         conn = conectar()
         cursor = conn.cursor()
 
-        sql = 'DELETE FROM eletrodomesticos WHERE id_eletrodomestico = %s'
+        sql = 'DELETE FROM eletrodomesticos WHERE id_eletronico = %s'
         valor = (id,)
         cursor.execute(sql, valor)
 

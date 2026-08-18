@@ -21,12 +21,12 @@ def atualizar_familia(pessoas, id):
         return f"Erro {e}. Atualização cancelada."
 
 
-def atualizar_eletrodomestico(familia, item_atuaizar, novo_item):
+def atualizar_eletrodomestico(id, item_atuaizar, novo_item):
     try:
         conn = conectar()
         cursor = conn.cursor()
 
-        sql = 'UPDATE eletrodomesticos SET %s = %s WHERE fk_id_familia = %s'
+        sql = 'UPDATE eletrodomesticos SET %s = %s WHERE id_eletronico = %s'
         valores = (item_atuaizar, novo_item, familia)
         cursor.execute(sql, valores)
 

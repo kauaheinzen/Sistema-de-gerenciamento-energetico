@@ -55,4 +55,4 @@ def cadastrar_eletrodomestico(familia, nome, consumo, horas):
         conn.rollback()
         cursor.close()
         conn.close()
-        return f"Erro {e}. Cadastro cancelado."
+        print(f"Erro {e}. Cadastro cancelado.")
