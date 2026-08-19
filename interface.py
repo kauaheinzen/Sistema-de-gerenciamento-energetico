@@ -42,7 +42,7 @@ def menu_principal():
     
     ctk.CTkButton(frame_principal,text="Listar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_listar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"), text_color="red",command=tela_atualizar).pack(pady=20)
+    ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_atualizar).pack(pady=20)
     
     ctk.CTkButton(frame_principal,text="Deletar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_desativar).pack(pady=20)
     
@@ -187,7 +187,47 @@ def tela_listar():
     ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
 
+def tela_IA():
+    def gerar_dicas(id):
+        try:
+            valida_id = validar_familia(id.get())
+            if valida_id[0]:
+                eletronicos = []
 
+                casa = ler_casa(valida_id[1])
+                consumo_mensal = ler_consumo_total(valida_id[1])
 
-tela_cadastrar()
+                for eletrodomestico in casa[1]:
+                    eletronicos.append(eletrodomestico)
+
+                ctk.CTkLabel(frame_principal,text="Enviando prompt... A Inteligência Artificial dará cerca de dez dicas e tabelas",font=("Arial",16)).pack(pady=10)
+                ctk.CTkLabel(frame_principal, text="de antes e depois com a estimativa de consumo ao realizar as melhorias.",font=("Arial",16)).pack(padx=10,pady=2)
+                ctk.CTkLabel(frame_principal,text="Isso pode levar alguns segundos... Por favor, não clique em nenhum botão", text_color="blue", font=("Arial",16)).pack(pady=10)
+                
+                app.update()
+                load_dotenv()
+                client = genai.Client()
+
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=f"Crie 10 soluções curtas para o problema de consumo excessivo de energia elétrica em uma residência, considerando que a família possui {casa[0][1]} integrantes e possui os seguintes eletrodomésticos com os respectivos parâmetros sendo eles: nome, consumo em Wh e horas utilizadas por dia, segue a lista de eletrônicos: {eletronicos}. O consumo total mensal é de {consumo_mensal[0]}W. Após as análises e dicas, faça uma tabela de antes e depois, sendo antes em cima e depois em baixo, com os eletrodomésticos, consumo em Wh, horas utilizadas por dia e o consumo total mensal de cada um deles após a aplicação dessas mudanças.",
+                )
+                
+                saida.delete("1.0", "end")
+                saida.insert("end", response.text)
+        except:
+            None
+
+    limpar_frame()
+    ctk.CTkLabel(frame_principal,text="Prompt IA para economia de energia",font=("Arial",25,"bold")).pack(pady=40)
+    ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=menu_principal).place(x=20,y=20)
+    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
+
+    entrar_id = ctk.CTkEntry(frame_principal,placeholder_text="Digite o ID da Família que a Inteligência Artificial analisará",width=360, height=30); entrar_id.pack(pady=20)
+    saida = ctk.CTkTextbox(frame_principal, width=550, height=300); saida.pack(pady=20) 
+
+    ctk.CTkButton(frame_principal,text="Gerar Dicas",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=lambda: gerar_dicas(entrar_id)).pack(pady=10)
+    
+
+tela_IA()
 app.mainloop()
