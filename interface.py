@@ -40,16 +40,16 @@ def menu_principal():
 
     ctk.CTkButton(frame_principal,text="Cadastrar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_cadastrar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Listar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_listar).pack(pady=20)
+    ctk.CTkButton(frame_principal,text="Listar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_listar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"), text_color="red",command=tela_atualizar).pack(pady=20)
+    ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"), text_color="red",command=tela_atualizar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Deletar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_desativar).pack(pady=20)
+    ctk.CTkButton(frame_principal,text="Deletar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_desativar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Prompt IA para economia de energia",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_IA).pack(pady=20)
+    ctk.CTkButton(frame_principal,text="Prompt IA para economia de energia",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_IA).pack(pady=20)
     
     
-    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
 
 def tela_cadastrar():
@@ -66,7 +66,7 @@ def tela_cadastrar():
     titulo.grid(row=0, column=1, padx=10, pady=(20, 10), sticky="n")
     titulo.insert("1.0", "O que você deseja cadastrar?")
     
-    titulo.tag_config("destaque", foreground="yellow")
+    titulo.tag_config("destaque", foreground="blue")
 
     titulo.tag_add("destaque", "1.18", "1.27")
 
@@ -75,13 +75,13 @@ def tela_cadastrar():
 
 
     ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=menu_principal).place(x=20,y=20)
-    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
     def tela_cadastrar_familia():
         limpar_frame()
         ctk.CTkLabel(frame_principal,text="Cadastrar Família",font=("Arial",25,"bold")).pack(pady=20)
         ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=tela_cadastrar).place(x=20,y=20)
-        ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+        ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
         try:
             entrar_pessoas = ctk.CTkEntry(frame_principal,placeholder_text="Número de Pessoas da Família",width=300, height=30); entrar_pessoas.pack(pady=10)
@@ -104,7 +104,7 @@ def tela_cadastrar():
         limpar_frame()
         ctk.CTkLabel(frame_principal,text="Cadastrar Eletrodoméstico",font=("Arial",25,"bold")).pack(pady=20)
         ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=tela_cadastrar).place(x=20,y=20)
-        ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+        ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
         try:
             entrar_nome = ctk.CTkEntry(frame_principal,placeholder_text="Nome do Eletrodoméstico",width=300, height=30); entrar_nome.pack(pady=10)
@@ -157,19 +157,34 @@ def tela_listar():
         for eletrodomestico in eletrodomesticos:
             saida.insert("end", f"ID: {eletrodomestico[0]} | Nome: {eletrodomestico[1]} | Consumo: {eletrodomestico[2]} Wh | Horas diárias: {eletrodomestico[3]}h\n")
 
-    ctk.CTkLabel(app, text="O que você deseja ler?", font=("Arial", 16, "bold")).pack(pady=10)
+    titulo = ctk.CTkTextbox(
+        frame_principal,
+        width=300,
+        height=40,
+        activate_scrollbars=False,
+        fg_color="transparent",
+        border_width=0,
+        font=("Arial", 20, "bold")
+    )
 
-    ctk.CTkButton(app, text="1 - Ler Famílias", command=ler_opcao_1).pack(pady=5)
+    titulo.pack(pady=20)
+    titulo.insert("1.0", "      O que você deseja ler?")
+    
+    titulo.tag_config("destaque", foreground="blue")
 
-    campo_id = ctk.CTkEntry(app, placeholder_text="Digite o ID da família")
-    campo_id.pack(pady=5)
+    titulo.tag_add("destaque", "1.24", "1.27")
 
-    ctk.CTkButton(app, text="2 - Ler Eletrodomésticos", command=ler_opcao_2).pack(pady=5)
+    titulo.configure(state="disabled")
 
-    saida = ctk.CTkTextbox(app, width=400, height=200)
-    saida.pack(pady=10)
 
-    ctk.CTkButton(app, text="0 - Voltar ao início", fg_color="gray", command=app.destroy).pack(pady=5)
+    campo_id = ctk.CTkEntry(frame_principal, placeholder_text="Digite o ID da família caso queira ver os eletrodomésticos", width=365, height=30); campo_id.pack(pady=10)
+    saida = ctk.CTkTextbox(frame_principal, width=450, height=300); saida.pack(pady=20)
+
+    ctk.CTkButton(frame_principal, text="Ler Famílias",width=300,height=50, command=ler_opcao_1).pack(pady=20)
+    ctk.CTkButton(frame_principal, text="Ler Eletrodomésticos",width=300,height=50, command=ler_opcao_2).pack(pady=20)
+    
+    ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=tela_cadastrar).place(x=20,y=20)
+    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
 
 
