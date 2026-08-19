@@ -136,5 +136,43 @@ def tela_cadastrar():
     ctk.CTkButton(frame_principal,text="Cadastrar Família",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_cadastrar_familia).grid(row=1, column=1, padx=10, pady=(40, 20), sticky="n")
     ctk.CTkButton(frame_principal,text="Cadastrar Eletrodoméstico",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_cadastrar_eletrodomestico).grid(row=2, column=1, padx=10, pady=(40, 20), sticky="n")
 
+def tela_listar():
+    limpar_frame()
+    def ler_opcao_1():
+        saida.delete("1.0", "end")
+        familias = ler_familias()
+        for familia in familias:
+            saida.insert("end", f"ID: {familia[0]} | Número de pessoas: {familia[1]} | Consumo Total: {familia[2]}\n")
+
+    def ler_opcao_2():
+        saida.delete("1.0", "end")
+        familia = campo_id.get().strip()
+
+        if not familia:
+            saida.insert("end", "Opção inválida!\n")
+            return
+
+        valida_familia = validar_familia(familia)
+        eletrodomesticos = ler_eletrodomesticos(valida_familia[1])
+        for eletrodomestico in eletrodomesticos:
+            saida.insert("end", f"ID: {eletrodomestico[0]} | Nome: {eletrodomestico[1]} | Consumo: {eletrodomestico[2]} Wh | Horas diárias: {eletrodomestico[3]}h\n")
+
+    ctk.CTkLabel(app, text="O que você deseja ler?", font=("Arial", 16, "bold")).pack(pady=10)
+
+    ctk.CTkButton(app, text="1 - Ler Famílias", command=ler_opcao_1).pack(pady=5)
+
+    campo_id = ctk.CTkEntry(app, placeholder_text="Digite o ID da família")
+    campo_id.pack(pady=5)
+
+    ctk.CTkButton(app, text="2 - Ler Eletrodomésticos", command=ler_opcao_2).pack(pady=5)
+
+    saida = ctk.CTkTextbox(app, width=400, height=200)
+    saida.pack(pady=10)
+
+    ctk.CTkButton(app, text="0 - Voltar ao início", fg_color="gray", command=app.destroy).pack(pady=5)
+
+
+
+
 tela_cadastrar()
 app.mainloop()
