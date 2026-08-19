@@ -44,7 +44,7 @@ def menu_principal():
     
     ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_atualizar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Deletar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_desativar).pack(pady=20)
+    ctk.CTkButton(frame_principal,text="Deletar Eletrônico",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_deletar).pack(pady=20)
     
     ctk.CTkButton(frame_principal,text="Prompt IA para economia de energia",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_IA).pack(pady=20)
     
@@ -183,7 +183,7 @@ def tela_listar():
     ctk.CTkButton(frame_principal, text="Ler Famílias",width=300,height=50, command=ler_opcao_1).pack(pady=20)
     ctk.CTkButton(frame_principal, text="Ler Eletrodomésticos",width=300,height=50, command=ler_opcao_2).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=tela_cadastrar).place(x=20,y=20)
+    ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=menu_principal).place(x=20,y=20)
     ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
 
@@ -305,22 +305,45 @@ def tela_IA():
     ctk.CTkButton(frame_principal,text="Gerar Dicas",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=lambda: gerar_dicas(entrar_id)).pack(pady=10)
     
 def tela_deletar():
-    limpar_frame()
+    global saida
+    def listar_eletrodomesticos(id):
+        try:
+            saida.delete("1.0", "end")
+            print(id.get())
+            valida_id = validar_familia(id.get())
+            if valida_id[0]:
+                eletrodomesticos = ler_eletrodomesticos(valida_id[1])
+                saida.delete("1.0", "end")
+                saida.insert("end", "Eletrodomésticos da família:\n")
+                for eletrodomestico in eletrodomesticos:
+                    saida.insert("end", f"ID: {eletrodomestico[0]} | Nome: {eletrodomestico[1]} | Consumo: {eletrodomestico[2]} Wh | Horas diárias: {eletrodomestico[3]}h\n")
+            else:
+                saida.insert("end", f"Erro: {valida_id[1]}\n")
+                app.update()
+        except:
+            saida.insert("end", "Erro ao listar eletrodomésticos. Verifique se o ID da família é válido.\n", text_color="red")
 
-    ctk.CTkLabel(frame_principal, text="O que você deseja deletar?", font=("Arial", 20, "bold")).pack(pady=20)
-    ctk.CTkButton(frame_principal, text="←", width=50, height=30, command=menu_principal).place(x=20, y=20)
-    ctk.CTkButton(frame_principal, text="☀️", width=50, command=mudar_tema).place(x=1220, y=20)
-
+    
     def preparar_sub_tela(titulo):
         limpar_frame()
-        ctk.CTkLabel(frame_principal, text=titulo, font=("Arial", 25, "bold")).pack(pady=40)
-        ctk.CTkButton(frame_principal, text="←", width=50, height=30, command=tela_deletar).place(x=20, y=20)
+        ctk.CTkLabel(frame_principal, text=titulo, font=("Arial", 25, "bold")).pack(pady=20)
+        ctk.CTkButton(frame_principal, text="←", width=50, height=30, command=menu_principal).place(x=20, y=20)
         ctk.CTkButton(frame_principal, text="☀️", width=50, command=mudar_tema).place(x=1220, y=20)
 
     def tela_deletar_eletrodomestico():
+        global saida
         preparar_sub_tela("Deletar Eletrodoméstico")
+
+        entrar_id_familia = ctk.CTkEntry(frame_principal, placeholder_text="Digite o ID da família que possui o eletrodoméstico que você deseja deletar", width=460, height=30)
+        entrar_id_familia.pack(pady=20)
+
+        saida = ctk.CTkTextbox(frame_principal, width=450, height=300)
+        saida.pack(pady=10)
+
+        ctk.CTkButton(frame_principal, text="Listar Eletrodomésticos", width=300, height=50, command=lambda: listar_eletrodomesticos(entrar_id_familia)).pack(pady=20)
+
         entrar_id = ctk.CTkEntry(frame_principal, placeholder_text="ID do Eletrodoméstico", width=300, height=30)
-        entrar_id.pack(pady=20)
+        entrar_id.pack(pady=10)
 
         def salvar_delecao():
             valida_eletrodomestico = validar_eletronico(entrar_id.get())
@@ -343,9 +366,9 @@ def tela_deletar():
             fg_color="#C62828", 
             hover_color="#B71C1C", 
             command=salvar_delecao
-        ).pack(pady=20)
+        ).pack(pady=10)
 
-    ctk.CTkButton(frame_principal, text="Deletar Eletrodoméstico", width=300, height=50, command=tela_deletar_eletrodomestico).pack(pady=15)
+    tela_deletar_eletrodomestico()
 
-tela_IA()
+menu_principal()
 app.mainloop()
