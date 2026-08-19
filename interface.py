@@ -36,17 +36,17 @@ def limpar_frame():
 
 def menu_principal():
     limpar_frame()
-    ctk.CTkLabel(frame_principal,text=" Sistema de Controle Energético",font=("Arial",35,"bold")).place(x=810,y=40)
+    ctk.CTkLabel(frame_principal,text=" Sistema de Controle Energético",font=("Arial",35,"bold")).pack(pady=20)
 
-    ctk.CTkButton(frame_principal,text="Cadastrar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_cadastrar).place(x=810,y=180)
+    ctk.CTkButton(frame_principal,text="Cadastrar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_cadastrar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Listar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_listar).place(x=810,y=270)
+    ctk.CTkButton(frame_principal,text="Listar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_listar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"), text_color="red",command=tela_atualizar).place(x=810,y=360)
+    ctk.CTkButton(frame_principal,text="Atualizar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"), text_color="red",command=tela_atualizar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Deletar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_desativar).place(x=810,y=450)
+    ctk.CTkButton(frame_principal,text="Deletar",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_desativar).pack(pady=20)
     
-    ctk.CTkButton(frame_principal,text="Prompt IA para economia de energia",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_IA).place(x=810,y=540)
+    ctk.CTkButton(frame_principal,text="Prompt IA para economia de energia",width=300,height=50,fg_color=("#2563EB","#475569"),hover_color=("#1D4ED8","#334155"),command=tela_IA).pack(pady=20)
     
     
     ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
@@ -55,21 +55,86 @@ def menu_principal():
 def tela_cadastrar():
     limpar_frame()
     titulo = ctk.CTkTextbox(
-        app,
+        frame_principal,
         width=300,
         height=40,
         activate_scrollbars=False,
         fg_color="transparent",
         border_width=0,
+        font=("Arial", 20, "bold")
     )
+    titulo.grid(row=0, column=1, padx=10, pady=(20, 10), sticky="n")
     titulo.insert("1.0", "O que você deseja cadastrar?")
-    titulo.pack(padx=20, pady=20)
+    
     titulo.tag_config("destaque", foreground="yellow")
 
     titulo.tag_add("destaque", "1.18", "1.27")
 
     titulo.configure(state="disabled")
 
+
+
+    ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=menu_principal).place(x=20,y=20)
+    ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+
+    def tela_cadastrar_familia():
+        limpar_frame()
+        ctk.CTkLabel(frame_principal,text="Cadastrar Família",font=("Arial",25,"bold")).pack(pady=20)
+        ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=tela_cadastrar).place(x=20,y=20)
+        ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+
+        try:
+            entrar_pessoas = ctk.CTkEntry(frame_principal,placeholder_text="Número de Pessoas da Família",width=300, height=30); entrar_pessoas.pack(pady=10)
+            ctk.CTkButton(frame_principal,text="Cadastrar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=lambda: cadastra(entrar_pessoas)).pack(pady=10)
+            def cadastra(pessoa):
+                valida_pessoas = validar_pessoas(pessoa.get())
+
+                if valida_pessoas[0]:
+                    cadastrar_familia(valida_pessoas[1])
+                    ctk.CTkLabel(frame_principal,text="Família cadastrada com sucesso!",text_color="green", font=("arial", 30, "bold")).pack(pady=20)
+                    app.after(1500, tela_cadastrar)
+                else:
+                    ctk.CTkLabel(frame_principal,text=valida_pessoas[1],text_color="red", font=("arial", 30, "bold")).pack(pady=20)
+                    app.after(1500, tela_cadastrar)
+        except:
+            ctk.CTkLabel(frame_principal,text="Erro ao cadastrar família, verifique se digitou um valor válido",text_color="red", font=("arial", 30, "bold")).pack(pady=20)
+            app.after(1500, tela_cadastrar)
+    
+    def tela_cadastrar_eletrodomestico():
+        limpar_frame()
+        ctk.CTkLabel(frame_principal,text="Cadastrar Eletrodoméstico",font=("Arial",25,"bold")).pack(pady=20)
+        ctk.CTkButton(frame_principal,text="←",width=50,height=30,command=tela_cadastrar).place(x=20,y=20)
+        ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1840,y=20)
+
+        try:
+            entrar_nome = ctk.CTkEntry(frame_principal,placeholder_text="Nome do Eletrodoméstico",width=300, height=30); entrar_nome.pack(pady=10)
+            entrar_consumo = ctk.CTkEntry(frame_principal,placeholder_text="Consumo do Eletrodoméstico (Wh)",width=300, height=30); entrar_consumo.pack(pady=10)
+            entrar_horas = ctk.CTkEntry(frame_principal,placeholder_text="Horas Diárias de Uso",width=300, height=30); entrar_horas.pack(pady=10)
+            entrar_id = ctk.CTkEntry(frame_principal,placeholder_text="Digite o ID da Família",width=300, height=30); entrar_id.pack(pady=10)
+            ctk.CTkButton(frame_principal,text="Cadastrar",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=lambda: cadastra(entrar_nome, entrar_consumo, entrar_horas, entrar_id)).pack(pady=10)
+            def cadastra(nome, consumo, horas, id_familia):
+                valida_nome = validar_nome(entrar_nome.get())
+                valida_consumo = validar_consumo(entrar_consumo.get())
+                valida_horas = validar_horas(entrar_horas.get())
+                valida_familia = validar_familia(entrar_id.get())
+
+                if valida_nome[0] and valida_consumo[0] and valida_horas[0] and valida_familia[0]:
+                    cadastrar_eletrodomestico(valida_familia[1], valida_nome[1],valida_consumo[1],valida_horas[1])
+                    ctk.CTkLabel(frame_principal,text="Eletrodoméstico cadastrado com sucesso!",text_color="green", font=("arial", 30, "bold")).pack(pady=40)
+                    app.update()
+                    app.after(1500, tela_cadastrar)
+                else:
+                    ctk.CTkLabel(frame_principal,text="Erro ao cadastrar eletrodoméstico, verifique se digitou valores válidos",text_color="red", font=("arial", 30, "bold")).pack(pady=40)
+                    app.update()
+                    app.after(1500, tela_cadastrar)
+        
+        except:
+            ctk.CTkLabel(frame_principal,text="Erro ao cadastrar eletrodoméstico, verifique se digitou valores válidos",text_color="red", font=("arial", 30, "bold")).pack(pady=40)
+            app.update()
+            app.after(1500, tela_cadastrar)
+
+    ctk.CTkButton(frame_principal,text="Cadastrar Família",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_cadastrar_familia).grid(row=1, column=1, padx=10, pady=(40, 20), sticky="n")
+    ctk.CTkButton(frame_principal,text="Cadastrar Eletrodoméstico",width=300,height=50,fg_color=("#475569","#2563EB"), hover_color=("#334155","#1D4ED8"),command=tela_cadastrar_eletrodomestico).grid(row=2, column=1, padx=10, pady=(40, 20), sticky="n")
 
 tela_cadastrar()
 app.mainloop()
