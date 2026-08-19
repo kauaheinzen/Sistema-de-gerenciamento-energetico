@@ -187,6 +187,82 @@ def tela_listar():
     ctk.CTkButton(frame_principal,text="☀️",width=50,command=mudar_tema).place(x=1220,y=20)
 
 
+def tela_atualizar():
+    limpar_frame()
+
+    ctk.CTkLabel(frame_principal, text="O que você deseja atualizar?", font=("Arial", 20, "bold")).pack(pady=20)
+    ctk.CTkButton(frame_principal, text="←", width=50, height=30, command=menu_principal).place(x=20, y=20)
+    ctk.CTkButton(frame_principal, text="☀️", width=50, command=mudar_tema).place(x=1220, y=20)
+
+    def preparar_sub_tela(titulo):
+        limpar_frame()
+        ctk.CTkLabel(frame_principal, text=titulo, font=("Arial", 25, "bold")).pack(pady=40)
+        ctk.CTkButton(frame_principal, text="←", width=50, height=30, command=tela_atualizar).place(x=20, y=20)
+        ctk.CTkButton(frame_principal, text="☀️", width=50, command=mudar_tema).place(x=1220, y=20)
+
+    def tela_atualizar_familia():
+        preparar_sub_tela("Atualizar Família")
+        entrar_id = ctk.CTkEntry(frame_principal, placeholder_text="ID da Família", width=300, height=30)
+        entrar_id.pack(pady=10)
+        entrar_pessoas = ctk.CTkEntry(frame_principal, placeholder_text="Nova Quantidade de Pessoas", width=300, height=30)
+        entrar_pessoas.pack(pady=10)
+
+        def salvar_familia():
+            valida_familia = validar_familia(entrar_id.get())
+            valida_pessoas = validar_pessoas(entrar_pessoas.get())
+            
+            if valida_familia[0] and valida_pessoas[0]:
+                atualizar_familia(valida_pessoas[1], valida_familia[1])
+                mensagem, cor_texto = "Família atualizada com sucesso!", "green"
+            else:
+                mensagem_erro = valida_familia[1] if not valida_familia[0] else valida_pessoas[1]
+                mensagem, cor_texto = f"Erro: {mensagem_erro}", "red"
+            
+            ctk.CTkLabel(frame_principal, text=mensagem, text_color=cor_texto, font=("Arial", 20, "bold")).pack(pady=20)
+            app.after(1500, tela_atualizar)
+
+        ctk.CTkButton(frame_principal, text="Atualizar", width=300, height=40, command=salvar_familia).pack(pady=20)
+
+    def tela_atualizar_eletrodomestico():
+        preparar_sub_tela("Atualizar Eletrodoméstico")
+        entrar_id = ctk.CTkEntry(frame_principal, placeholder_text="ID do Eletrodoméstico", width=300, height=30)
+        entrar_id.pack(pady=10)
+        combo_opcoes = ctk.CTkOptionMenu(frame_principal, values=["Nome", "Consumo (Wh)", "Horas/Dia"], width=300, height=30,fg_color="#343638",button_color="#050505",button_hover_color="#565B5E", text_color="#DCE4EE").pack(pady=20)
+        entrar_valor = ctk.CTkEntry(frame_principal, placeholder_text="Novo Valor", width=300, height=30).pack(pady=20)
+
+        def salvar_eletrodomestico():
+            valida_eletrodomestico = validar_eletronico(entrar_id.get())
+            if not valida_eletrodomestico[0]:
+                ctk.CTkLabel(frame_principal, text=f"Erro: {valida_eletrodomestico[1]}", text_color="red", font=("Arial", 20, "bold")).pack(pady=20)
+                app.after(1500, tela_atualizar)
+                return
+
+            opcao_selecionada = combo_opcoes.get()
+            novo_valor = entrar_valor.get()
+            
+            if opcao_selecionada == "Nome": 
+                valida_campo, nome_coluna = validar_nome(novo_valor), "nome_eletronico"
+            elif opcao_selecionada == "Consumo (Wh)": 
+                valida_campo, nome_coluna = validar_consumo(novo_valor), "consumo"
+            else: 
+                valida_campo, nome_coluna = validar_horas(novo_valor), "horas_diarias"
+
+            if valida_campo[0]:
+                atualizar_eletrodomestico(valida_eletrodomestico[1], nome_coluna, valida_campo[1])
+                mensagem, cor_texto = "Eletrodoméstico atualizado com sucesso!", "green"
+            else:
+                mensagem, cor_texto = f"Erro: {valida_campo[1]}", "red"
+            
+            ctk.CTkLabel(frame_principal, text=mensagem, text_color=cor_texto, font=("Arial", 20, "bold")).pack(pady=20)
+            app.after(1500, tela_atualizar)
+
+        ctk.CTkButton(frame_principal, text="Atualizar", width=300, height=40, command=salvar_eletrodomestico).pack(pady=20)
+
+    ctk.CTkButton(frame_principal, text="Atualizar Família", width=300, height=50, command=tela_atualizar_familia).pack(pady=15)
+    ctk.CTkButton(frame_principal, text="Atualizar Eletrodoméstico", width=300, height=50, command=tela_atualizar_eletrodomestico).pack(pady=15)
+
+
+
 def tela_IA():
     def gerar_dicas(id):
         try:
