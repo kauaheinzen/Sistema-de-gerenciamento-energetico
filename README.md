@@ -50,7 +50,7 @@ https://www.mysql.com/products/workbench/
 **6.** No MySQL Workbench, clique no botão de **Executar** (ícone de raio) para criar o banco de dados e as tabelas.
 
 
-**Importante:** Coloque sua API KEY da Gemini no arquivo **.env** no local indicado. Caso não tenha uma API KEY da Gemini, crie uma em: https://aistudio.google.com/api-keys , clicando no botão Criar chave API.
+**Importante:** Coloque sua API KEY da Gemini no arquivo **.env** no local indicado. Caso não tenha uma API KEY da Gemini, crie uma em: https://aistudio.google.com/api-keys , clicando no botão "Criar chave API".
 
 **8.** Para iniciar o sistema, execute no terminal do VS Code:
 
