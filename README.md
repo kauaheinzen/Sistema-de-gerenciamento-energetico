@@ -25,7 +25,7 @@ https://www.python.org/downloads/
 
 **3.** Abra o VS Code, vá até a aba **Extensões** e instale a extensão **Python**.
 
-**4.** Abra o terminal do VS Code e execute os seguintes comandos:
+**4.** Abra o terminal do VS Code utilizando Ctrl + J e execute os seguintes comandos:
 
 ```bash
 pip install -r .\requirements.txt
@@ -52,4 +52,3 @@ python interface.py
 Ou simplesmente clique no botão **Run Python** do VS Code.
 
 Pronto! O Sistema de gerenciamento energetico estará em funcionamento.
-
