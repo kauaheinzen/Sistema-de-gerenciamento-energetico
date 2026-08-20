@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 from google import genai
 import customtkinter as ctk
+import threading
+import queue
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
@@ -266,6 +268,8 @@ def tela_atualizar():
 def tela_IA():
     def gerar_dicas(id):
         try:
+            fila_texto = queue.Queue()
+
             valida_id = validar_familia(id.get())
             if valida_id[0]:
                 eletronicos = []
@@ -276,21 +280,58 @@ def tela_IA():
                 for eletrodomestico in casa[1]:
                     eletronicos.append(eletrodomestico)
 
-                ctk.CTkLabel(frame_principal,text="Enviando prompt... A Inteligência Artificial dará cerca de dez dicas e tabelas",font=("Arial",16)).pack(pady=10)
-                ctk.CTkLabel(frame_principal, text="de antes e depois com a estimativa de consumo ao realizar as melhorias.",font=("Arial",16)).pack(padx=10,pady=2)
-                ctk.CTkLabel(frame_principal,text="Isso pode levar alguns segundos... Por favor, não clique em nenhum botão", text_color="blue", font=("Arial",16)).pack(pady=10)
-                
-                app.update()
-                load_dotenv()
-                client = genai.Client()
 
-                response = client.models.generate_content(
-                    model="gemini-3.6-flash",
-                    contents=f"Crie 10 soluções curtas para o problema de consumo excessivo de energia elétrica em uma residência, considerando que a família possui {casa[0][1]} integrantes e possui os seguintes eletrodomésticos com os respectivos parâmetros sendo eles: nome, consumo em Wh e horas utilizadas por dia, segue a lista de eletrônicos: {eletronicos}. O consumo total mensal é de {consumo_mensal[0]}W. Após as análises e dicas, faça uma tabela de antes e depois, sendo antes em cima e depois em baixo, com os eletrodomésticos, consumo em Wh, horas utilizadas por dia e o consumo total mensal de cada um deles após a aplicação dessas mudanças.",
-                )
+
+                def consumir_stream_gemini():
+                    load_dotenv()
+                    client = genai.Client()
+
+                    response = client.models.generate_content_stream(
+                        model="gemini-3.6-flash",
+                        contents=f"Crie 10 soluções curtas para o problema de consumo excessivo de energia elétrica em uma residência, considerando que a família possui {casa[0][1]} integrantes e possui os seguintes eletrodomésticos com os respectivos parâmetros sendo eles: nome, consumo em Wh e horas utilizadas por dia, segue a lista de eletrônicos: {eletronicos}.Considere as dicas que apenas interessam aos eletrónicos possuídos pela família, desconsiderando dicas sobre eletrónicos não cadastrados. O consumo total mensal é de {consumo_mensal[0]}W. Após as análises e dicas, faça uma tabela de antes e depois, sendo antes em cima e depois em baixo, com os eletrodomésticos, consumo em Wh, horas utilizadas por dia e o consumo total mensal de cada um deles após a aplicação dessas mudanças.",
+                    )
+
+                    for chunk in response:
+                        if chunk.text:
+                            fila_texto.put(chunk.text)
+
+
+                def atualizar_interface():
+                    while not fila_texto.empty():
+                        texto = fila_texto.get()
+                        saida.insert("end", texto)
+                        saida.see("end")
+
+                    app.after(50, atualizar_interface)
+
+
+                def iniciar_geracao():
+                    saida.delete("1.0", "end")
+
+                    valida_API = validar_API_env()
+
+                    if not valida_API:
+                        ctk.CTkLabel(frame_principal,text="Enviando prompt... A Inteligência Artificial dará cerca de dez dicas e tabelas",font=("Arial",16)).pack(pady=10)
+                        ctk.CTkLabel(frame_principal, text="de antes e depois com a estimativa de consumo ao realizar as melhorias.",font=("Arial",16)).pack(padx=10,pady=2)
+                        ctk.CTkLabel(frame_principal,text="Isso pode levar alguns segundos... Por favor, não clique em nenhum botão", text_color="blue", font=("Arial",16)).pack(pady=10)
+                        app.update()
                 
+                        thread = threading.Thread(target=consumir_stream_gemini, daemon=True)
+                        thread.start()
+
+                        atualizar_interface()
+                    
+                    else:
+                        saida.insert("end", f"{valida_API}\n")
+                        app.update()
+                
+                iniciar_geracao()
+
+            else:
                 saida.delete("1.0", "end")
-                saida.insert("end", response.text)
+                saida.insert("end", f"Erro: {valida_id[1]}\n")
+                app.update()
+
         except:
             None
 

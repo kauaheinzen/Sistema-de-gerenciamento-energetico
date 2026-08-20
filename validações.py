@@ -1,4 +1,42 @@
 from cadastrar import conectar
+import os
+from dotenv import load_dotenv
+from google import genai
+from google.genai.errors import APIError
+
+
+def validar_ambiente():
+    if not os.path.exists(".env"):
+        return False, "Arquivo .env não encontrado no diretório do projeto."
+
+    load_dotenv()
+
+    api_key = os.getenv("GEMINI_API_KEY")
+
+    if not api_key or api_key.strip() == "":
+        return False, "A chave GEMINI_API_KEY não foi encontrada dentro do .env."
+
+    try:
+        client = genai.Client()
+        client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents="ping",
+            config={"max_output_tokens": 1},
+        )
+        return True
+    except APIError as e:
+        return False, f"Chave de API inválida ou sem permissão: {e.message}"
+    except Exception as e:
+        return False, f"Erro ao conectar com a API: {str(e)}"
+
+
+def validar_API_env():
+    valido, mensagem = validar_ambiente()
+
+    if not valido:
+        return f"Erro de Configuração: {mensagem}"
+    else:
+        return False
 
 
 def validar_pessoas(pessoas):
