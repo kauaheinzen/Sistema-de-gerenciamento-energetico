@@ -26,8 +26,8 @@ def atualizar_eletrodomestico(id, item_atuaizar, novo_item):
         conn = conectar()
         cursor = conn.cursor()
 
-        sql = 'UPDATE eletrodomesticos SET %s = %s WHERE id_eletronico = %s'
-        valores = (item_atuaizar, novo_item, familia)
+        sql = f'UPDATE eletrodomesticos SET {item_atuaizar} = %s WHERE id_eletronico = %s'
+        valores = (novo_item, id)
         cursor.execute(sql, valores)
 
         conn.commit()
@@ -40,4 +40,4 @@ def atualizar_eletrodomestico(id, item_atuaizar, novo_item):
         conn.rollback()
         cursor.close()
         conn.close()
-        return f"Erro {e}. Atualização cancelada."
+        print(f"Erro {e}. Atualização cancelada.")

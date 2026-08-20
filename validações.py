@@ -1,4 +1,4 @@
-from cadastrar import conectar
+from conectar import conectar
 import os
 from dotenv import load_dotenv
 from google import genai
