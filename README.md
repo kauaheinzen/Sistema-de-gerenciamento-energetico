@@ -52,7 +52,7 @@ https://www.mysql.com/products/workbench/
 
 **Importante:** Coloque sua API KEY da Gemini no arquivo **.env** no local indicado. Caso não tenha uma API KEY da Gemini, crie uma em: https://aistudio.google.com/api-keys , clicando no botão "Criar chave API".
 
-**8.** Para iniciar o sistema, execute no terminal do VS Code:
+**7.** Para iniciar o sistema, execute no terminal do VS Code:
 
 ```bash
 python main_interface.py
