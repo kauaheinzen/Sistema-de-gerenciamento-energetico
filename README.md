@@ -28,34 +28,25 @@ https://www.python.org/downloads/
 **4.** Abra o terminal do VS Code e execute os seguintes comandos:
 
 ```bash
-pip install mysql-connector
-pip install customtkinter
-pip install google-genai
+pip install -r .\requirements.txt
 ```
 
-Caso ocorra algum erro, execute:
-
-```bash
-pip install --upgrade mysql-connector-python
-python -m pip install --upgrade pip
-```
-
-**5.** Abra o MySQL Workbench e copie o código presente no arquivo **codigosql**, colando-o na área de consultas.
+**5.** Abra o MySQL Workbench e copie o código presente no arquivo **codigo.sql**, colando-o na área de consultas.
 
 Caso ainda não tenha o MySQL Workbench instalado, faça o download em:
 https://www.mysql.com/products/workbench/
 
-**Importante:** defina a senha do usuário **root** como **Senac2026**. Caso prefira utilizar outra senha, altere o valor da variável **Password** no arquivo **funcoes_SQL.py** para a senha escolhida.
+**Importante:** defina a senha do usuário **root** como **Senac2026**. Caso prefira utilizar outra senha, altere o valor da variável **Password** no arquivo **conectar.py** para a senha escolhida.
 
 **6.** No MySQL Workbench, clique no botão de **Executar** (ícone de raio) para criar o banco de dados e as tabelas.
 
 
-**Importante:** Coloque sua API KEY da Gemini no arquivo **.env** no local indicado. Caso não tenha uma API KEY da Gemini, crie uma em: https://aistudio.google.com/api-keys , clicando no botão "Criar chave API".
+**Importante:** Coloque sua API KEY da Gemini no arquivo **.env.example** no local indicado e o renomeie para ".env". Caso não tenha uma API KEY da Gemini, crie uma em: https://aistudio.google.com/api-keys , clicando no botão "Criar chave API" no canto superior direito, e se cadastre no site.
 
 **7.** Para iniciar o sistema, execute no terminal do VS Code:
 
 ```bash
-python main_interface.py
+python interface.py
 ```
 
 Ou simplesmente clique no botão **Run Python** do VS Code.
